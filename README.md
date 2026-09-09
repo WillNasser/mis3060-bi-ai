@@ -1,8 +1,8 @@
 # MIS3060 Business Intelligence with AI
 Villanova School of Business — Fall 2026
 
-**Student:** Will Nasser
-**GitHub:** WillNasser
+**Student: Will Nasser** 
+**GitHub: WillNasser** 
 
 ## About This Repository
 This repository contains all lab exercises, homework assignments, and project

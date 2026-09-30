@@ -28,6 +28,7 @@ secrets.*
 02_Data/**
 !02_Data/.gitkeep
 *.csv
+!hw*/*.csv
 *.xlsx
 *.parquet
 *.h5

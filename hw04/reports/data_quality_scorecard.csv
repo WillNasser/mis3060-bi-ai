@@ -1,0 +1,17 @@
+table,stage,rows,completeness_pct,key_uniqueness_pct,type_validity_pct,rule_pass_pct,referential_match_pct,referential_worst_pct,referential_worst_relationship
+dim_advisor,raw,25,100.0,100.0,100.0,100.0,,,
+dim_advisor,clean,25,100.0,100.0,100.0,100.0,,,
+dim_client,raw,2525,99.785,100.0,100.0,99.742,100.0,100.0,dim_client.advisor_id -> dim_advisor.advisor_id
+dim_client,clean,2525,99.799,100.0,100.0,100.0,100.0,100.0,dim_client.advisor_id -> dim_advisor.advisor_id
+dim_date,raw,1827,100.0,100.0,100.0,100.0,,,
+dim_date,clean,1827,100.0,100.0,100.0,100.0,,,
+dim_security,raw,500,100.0,100.0,100.0,100.0,100.0,100.0,dim_security.benchmark_id -> dim_benchmark.benchmark_id
+dim_security,clean,500,100.0,100.0,100.0,100.0,100.0,100.0,dim_security.benchmark_id -> dim_benchmark.benchmark_id
+dim_benchmark,raw,8,100.0,100.0,100.0,100.0,,,
+dim_benchmark,clean,8,100.0,100.0,100.0,100.0,,,
+fact_fees,raw,122197,100.0,100.0,100.0,100.0,100.0,100.0,fact_fees.client_id -> dim_client.client_id
+fact_fees,clean,122197,100.0,100.0,100.0,100.0,100.0,100.0,fact_fees.client_id -> dim_client.client_id
+fact_portfolio_snapshot,raw,129547,100.0,100.0,99.923,99.964,100.0,100.0,fact_portfolio_snapshot.client_id -> dim_client.client_id
+fact_portfolio_snapshot,clean,129547,100.0,100.0,100.0,99.964,100.0,100.0,fact_portfolio_snapshot.client_id -> dim_client.client_id
+fact_transactions,raw,298772,100.0,100.0,90.545,99.948,81.95,0.0,fact_transactions.security_id -> dim_security.security_id
+fact_transactions,clean,298572,100.0,100.0,100.0,100.0,100.0,100.0,fact_transactions.client_id -> dim_client.client_id

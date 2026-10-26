@@ -1,0 +1,6 @@
+# The repo-level .gitignore ignores *.csv. For HW4 the clean tables, the audit trail and the
+# reports ARE the deliverables, so re-include CSVs inside hw04/.
+!*.csv
+
+# Raw data stays out of git (same practice as the earlier homeworks).
+data/raw/

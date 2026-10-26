@@ -1,0 +1,26 @@
+table,group,check,column,severity,rows_affected,pct_of_rows,detail
+dim_advisor,1,null_token_text,certifications,WARN,6,24.0,literal text like None/NaN that is not read as null; decide meaning
+dim_client,1,bad_format,state,WARN,78,3.089,expected /^[A-Z]{2}$/; e.g. Pennsylvania | Pennsylvania | New York
+dim_client,1,leading_zeros,zip_code,INFO,232,9.188,keep as text or zeros are lost
+dim_client,1,blank_values,risk_profile,INFO,76,3.01,blank cells; decide if structural (legitimate) or missing
+dim_security,1,blank_values,sector,INFO,219,43.8,blank cells; decide if structural (legitimate) or missing
+dim_security,1,blank_values,expense_ratio_bps,INFO,281,56.2,blank cells; decide if structural (legitimate) or missing
+dim_security,1,blank_expense_ratio_non_etf,expense_ratio_bps,INFO,281,56.2,probably legitimate structure (only ETFs have it)
+fact_fees,4,activity_before_client_since,fee_date,WARN,858,0.702,
+fact_portfolio_snapshot,1,currency_or_percent_symbols,return_ytd,WARN,300,0.232,"$ , % inside numeric values"
+fact_portfolio_snapshot,1,scientific_notation,return_ytd,WARN,135,0.104,"numbers written like 9.9e-05 in a column of plain decimals (parses, but formats inconsistently)"
+fact_portfolio_snapshot,1,scientific_notation,active_alpha_ytd,WARN,756,0.584,"numbers written like 9.9e-05 in a column of plain decimals (parses, but formats inconsistently)"
+fact_portfolio_snapshot,1,extreme_return_ytd,return_ytd,WARN,472,0.364,"above 2.0 (200%) after converting % rows; consistent with benchmark+alpha, so a plausibility issue (see decision log)"
+fact_portfolio_snapshot,1,aum_exactly_1000,aum,INFO,420,0.324,possible AUM floor of 1000.00
+fact_portfolio_snapshot,4,activity_before_client_since,snapshot_date,WARN,930,0.718,
+fact_transactions,1,float_style_id,security_id,ERROR,197175,65.995,IDs like 45.0 will not match 45
+fact_transactions,1,blank_values,security_id,WARN,101597,34.005,blank cells; decide if structural (legitimate) or missing
+fact_transactions,1,out_of_range,shares,WARN,836,0.28,expected 1e-07..None; e.g. -261.9719 | -338.0946 | -360.8407
+fact_transactions,1,blank_values,shares,INFO,101597,34.005,blank cells; decide if structural (legitimate) or missing
+fact_transactions,1,negative_values,shares,INFO,836,0.28,check sign rule for this column
+fact_transactions,1,blank_values,price,INFO,101597,34.005,blank cells; decide if structural (legitimate) or missing
+fact_transactions,1,blank_security_on_non_trade,security_id,INFO,101597,34.005,legitimate structure: cash flows and fee debits have no security
+fact_transactions,2,amount_vs_shares_x_price,amount,WARN,836,0.28,differs by more than 1 cent; e.g. 115715.61 | 134510.94 | 87850.28
+fact_transactions,3,orphan_foreign_keys,client_id,ERROR,200,0.067,fact_transactions.client_id -> dim_client.client_id: 200 distinct orphan keys; e.g. 3191 | 3017 | 3058
+fact_transactions,3,key_format_mismatch,security_id,ERROR,197175,65.995,fact_transactions.security_id -> dim_security.security_id: matches only after trimming/.0 removal (e.g. 45.0 vs 45)
+fact_transactions,3,null_foreign_key,security_id,WARN,101597,34.005,fact_transactions.security_id -> dim_security.security_id: blank key; legitimate only if the row type has no such entity

@@ -1,0 +1,14 @@
+relationship,fact_rows,null_keys,match_rate_raw_pct,match_rate_normalised_pct,orphan_rows,distinct_orphan_keys
+dim_client.advisor_id -> dim_advisor.advisor_id,2525,0,100.0,100.0,0,0
+dim_security.benchmark_id -> dim_benchmark.benchmark_id,500,0,100.0,100.0,0,0
+fact_fees.client_id -> dim_client.client_id,122197,0,100.0,100.0,0,0
+fact_fees.advisor_id -> dim_advisor.advisor_id,122197,0,100.0,100.0,0,0
+fact_fees.fee_date -> dim_date.date,122197,0,100.0,100.0,0,0
+fact_portfolio_snapshot.client_id -> dim_client.client_id,129547,0,100.0,100.0,0,0
+fact_portfolio_snapshot.advisor_id -> dim_advisor.advisor_id,129547,0,100.0,100.0,0,0
+fact_portfolio_snapshot.benchmark_id -> dim_benchmark.benchmark_id,129547,0,100.0,100.0,0,0
+fact_portfolio_snapshot.snapshot_date -> dim_date.date,129547,0,100.0,100.0,0,0
+fact_transactions.client_id -> dim_client.client_id,298772,0,99.933,99.933,200,200
+fact_transactions.advisor_id -> dim_advisor.advisor_id,298772,0,100.0,100.0,0,0
+fact_transactions.security_id -> dim_security.security_id,298772,101597,0.0,100.0,0,0
+fact_transactions.txn_date -> dim_date.date,298772,0,100.0,100.0,0,0

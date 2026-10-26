@@ -1,0 +1,26 @@
+table,issue,action,rows_affected,note
+fact_transactions,orphan client_id,quarantine,200,200 distinct client IDs (2702-3192) not in dim_client; saved as received to quarantine_fact_transactions_orphan_client.csv
+fact_transactions,security_id stored as 45.0,standardize,197044,"197,175 in raw; 131 were in quarantined rows; all remaining non-blank IDs now exist in dim_security"
+fact_transactions,negative shares on Buy,fix (abs) + flag shares_sign_fixed,835,"836 in raw, 1 in quarantined rows; all Buy; amount = |shares| x price confirmed within 1 cent; 0 Buy/Sell/Dividend rows now disagree"
+fact_portfolio_snapshot,return_ytd in scientific notation,standardize to plain decimal,135,e.g. 9.9e-05 -> 0.000099; every converted value is exactly equal as a decimal number (checked with Decimal)
+fact_portfolio_snapshot,active_alpha_ytd in scientific notation,standardize to plain decimal,756,e.g. -1.9e-05 -> -0.000019; every converted value is exactly equal as a decimal number (checked with Decimal)
+fact_portfolio_snapshot,return_ytd as percent text,"convert (strip %, /100)",300,"reconciled to benchmark_return_ytd + active_alpha_ytd: max diff 0.000050 on converted rows (2-decimal rounding), 0.000001 on the others; tolerance 0.0001"
+fact_portfolio_snapshot,return_ytd above 2.0,flag return_ytd_extreme (values unchanged),472,"68 clients, max 94.67; in 10,855 of 10,855 client-years return_ytd implies a constant start-of-year AUM (so it is AUM growth incl. cash flows); on flagged rows the implied start-of-year AUM has median 1,048 (max 55,897) vs 465,167 across all rows; 420 snapshot rows have AUM of exactly 1000.00, the minimum in the table (92 clients)"
+dim_client,state as full name,standardize to 2-letter code,78,"20 distinct states now, all valid codes"
+dim_client,risk_profile blank,flag risk_profile_missing (not filled),76,"3.01% of 2,525 clients; 0 whitespace-only values set to empty"
+fact_transactions,blank security_id/shares/price,leave as is,101528,all on Advisory Fee/Deposit/Withdrawal; Buy/Sell/Dividend rows have none blank
+fact_fees,fee_date before client_since,leave as is,858,"max gap 30 days, median 15; all dated the 1st of a month (month-start billing)"
+fact_portfolio_snapshot,snapshot_date before client_since,leave as is,930,"max gap 30 days, median 15; all dated the 1st of a month (month-start billing)"
+fact_transactions,Buy/Sell dated on a non-trading day,leave as is,40630,"28.4% of 143,218 Buy/Sell rows after quarantine (40,649 of 143,311 in raw); each day of the week holds 14.1%-14.5% of them (even spread), true trade dates cannot be recovered, so dates are not changed"
+fact_transactions,Advisory Fee debits vs fact_fees Advisory fees (rows_affected = client-months compared),leave as is,7653,"no client-month matches to the cent (0 of 7,653); debits are a median 3.11x the fees; total debits 263,709,737 vs total Advisory fees 53,617,373 (4.9x); fact_fees amounts follow aum_basis x bps_charged / 12 to the cent, the debits have no such rule here, so they are treated as separate figures"
+dim_security,blank sector,leave as is,219,blank only for non-equity securities; filled for every Equity
+dim_security,blank expense_ratio_bps,leave as is,281,blank only for non-ETFs; filled for every ETF
+dim_advisor,certifications = 'None',leave as is,6,"means no certification; keep as text, read files with keep_default_na=False"
+dim_advisor,row reconciliation,verify raw = clean + quarantined (by ID),25,raw 25 = clean 25 + quarantined 0; all changed cells logged with matching key/old/new
+dim_client,row reconciliation,verify raw = clean + quarantined (by ID),2525,raw 2525 = clean 2525 + quarantined 0; all changed cells logged with matching key/old/new
+dim_date,row reconciliation,verify raw = clean + quarantined (by ID),1827,raw 1827 = clean 1827 + quarantined 0; all changed cells logged with matching key/old/new
+dim_security,row reconciliation,verify raw = clean + quarantined (by ID),500,raw 500 = clean 500 + quarantined 0; all changed cells logged with matching key/old/new
+dim_benchmark,row reconciliation,verify raw = clean + quarantined (by ID),8,raw 8 = clean 8 + quarantined 0; all changed cells logged with matching key/old/new
+fact_fees,row reconciliation,verify raw = clean + quarantined (by ID),122197,raw 122197 = clean 122197 + quarantined 0; all changed cells logged with matching key/old/new
+fact_portfolio_snapshot,row reconciliation,verify raw = clean + quarantined (by ID),129547,raw 129547 = clean 129547 + quarantined 0; all changed cells logged with matching key/old/new
+fact_transactions,row reconciliation,verify raw = clean + quarantined (by ID),298772,raw 298772 = clean 298572 + quarantined 200; all changed cells logged with matching key/old/new
